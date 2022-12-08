@@ -1,18 +1,18 @@
-const { UserEntity } = require('../../domain/aggregate/userEntity')
+import UserEntity from '../../domain/aggregate/userEntity';
 
-const { ContactValueObject } = require('../../domain/aggregate/valueObject/contactValueObject')
+import ContactValueObject from '../../domain/aggregate/valueObject/contactValueObject';
 
-class UserRepository {
-    context
+export default class UserRepository {
+  context;
 
-    constructor(context) {
-        this.context = context
-    }
+  constructor(context) {
+    this.context = context;
+  }
 
-    async add(user) {
-        const database = await this.context.createDatabase()
+  async add(user) {
+    const database = await this.context.createDatabase();
 
-        const sql = `
+    const sql = `
         INSERT INTO User (
             Email,
             SaltHash,
@@ -29,76 +29,70 @@ class UserRepository {
             ?,
             ?,
             ?
-        )`
+        )`;
 
-        const params = [
-            user.email,
-            user.saltHash,
-            user.storedHash,
-            user.name.firstName,
-            user.name.lastName,
-            user.contact.ddd,
-            user.contact.number,
-            // user.contact.type
-        ]
+    const params = [
+      user.email,
+      user.saltHash,
+      user.storedHash,
+      user.name.firstName,
+      user.name.lastName,
+      user.contact.ddd,
+      user.contact.number,
+    ];
 
-        this.context.run(database, sql, params)
-        return this.context.closeDatabase(database)
-    }
+    return this.context.run(database, sql, params);
+  }
 
-    async getById(id) {
-        const sql = `
+  async getById(id) {
+    const sql = `
         SELECT *
         FROM User
-        WHERE Id = ?`
+        WHERE Id = ?`;
 
-        const params = [
-            id
-        ]
+    const params = [id];
 
-        return this.get(sql, params)
-    }
+    return this.get(sql, params);
+  }
 
-    async getByEmail(email) {
-        const sql = `
+  async getByEmail(email) {
+    const sql = `
         SELECT *
         FROM User
-        WHERE Email = ?`
+        WHERE Email = ?`;
 
-        const params = [
-            email
-        ]
+    const params = [email];
+    return this.get(sql, params);
+  }
 
-        return this.get(sql, params)
+  async get(sql, params) {
+    const database = await this.context.createDatabase();
+    const results = await this.context.get(database, sql, params);
+    const result = results[0];
+
+    if (result.rows.length === 0) {
+      return null;
     }
 
-    async get(sql, params) {
-        const database = await this.context.createDatabase()
-        let row = await this.context.get(database, sql, params)
-        await this.context.closeDatabase(database)
-        return row ? this.createUserEntity(row) : null
-    }
+    const element = result.rows.item(0);
+    return this.createUserEntity(element);
+  }
 
-    createUserEntity(row) {
-        const contactValueObject = new ContactValueObject(
-            row.Contact_Ddd,
-            row.Contact_Number,
-            // row.Contact_Type
-        )
-        const userEntity = new UserEntity(
-            row.Email,
-            row.SaltHash,
-            row.StoredHash,
-            row.Name_FirstName,
-            row.Name_LastName,
-            contactValueObject
-        )
+  createUserEntity(element) {
+    const contactValueObject = new ContactValueObject(
+      element.Contact_Ddd,
+      element.Contact_Number,
+    );
+    const userEntity = new UserEntity(
+      element.Email,
+      element.SaltHash,
+      element.StoredHash,
+      element.Name_FirstName,
+      element.Name_LastName,
+      contactValueObject,
+    );
 
-        userEntity.id = row.Id
-        return userEntity
-    }
-}
-
-module.exports = {
-    UserRepository
+    userEntity.id = element.Id;
+    return userEntity;
+  }
 }

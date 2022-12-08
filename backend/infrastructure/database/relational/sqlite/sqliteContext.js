@@ -1,69 +1,88 @@
-class SqliteContext {
-    sqlite
-    
-    constructor() {
-        this.sqlite = require('sqlite3').verbose()
-    }
+import {openDatabase, enablePromise} from 'react-native-sqlite-storage';
 
-    createDatabase() {
-        return new Promise((resolve, reject) => {
-            const database = new this.sqlite.Database('./infrastructure/database/relational/sqlite/pata.sqlite', (error) => {
-                if (error) {
-                    reject(error)
-                }             
-            })
+enablePromise(true);
 
-            resolve(database)
-        })
-    }
+export default class SqliteContext {
+  // sqlite;
 
-    closeDatabase(database) {
-        return new Promise((resolve, reject) => {
-            database.close((error) => {
-                if (error) {
-                    reject(error)
-                }
-                resolve()
-            })
-        })
-    }
+  // constructor() {
+  //   this.sqlite = require('sqlite3').verbose();
+  // }
 
-    run(database, sql, params) {
-        return new Promise((resolve, reject) => {
-            database.run(sql, params, (error) => {
-                if (error) {
-                    reject(error)
-                }
-                resolve()
-            })
-        })
-    }
+  constructor() {}
 
-    get(database, sql, params) {
-        return new Promise((resolve, reject) => {
-            database.get(sql, params, (error, row) => {
-                if (error) {
-                    reject(error)
-                }
+  createDatabase() {
+    // return new Promise((resolve, reject) => {
+    //   const database = new this.sqlite.Database(
+    //     './infrastructure/database/relational/sqlite/pata.sqlite',
+    //     error => {
+    //       if (error) {
+    //         reject(error);;
+    //       }
+    //     },
+    //   );;
 
-                resolve(row)
-            })
-        })
-    }
+    //   resolve(database);;
+    // });;
 
-    getAll(database, sql, params) {
-        return new Promise((resolve, reject) => {
-            database.all(sql, params, (error, rows) => {
-                if (error) {
-                    reject(error)
-                }
+    return openDatabase({
+      name: 'pata.db',
+      location: 'default',
+    });
+  }
 
-                resolve(rows)
-            })
-        })
-    }
-}
+  // // closeDatabase(database) {
+  // //   return new Promise((resolve, reject) => {
+  // //     database.close(error => {
+  // //       if (error) {
+  // //         reject(error);;
+  // //       }
+  // //       resolve();;
+  // //     });;
+  // //   });;
+  // // }
 
-module.exports =  {
-    SqliteContext
+  // run(database, sql, params) {
+  //   // return new Promise((resolve, reject) => {
+  //   //   database.run(sql, params, error => {
+  //   //     if (error) {
+  //   //       reject(error);
+  //   //     }
+  //   //     resolve();
+  //   //   });
+  //   // });
+
+  //   return database.executeSql(sql, params);
+  // }
+
+  run(database, sql, params) {
+    return database.executeSql(sql, params);
+  }
+
+  get(database, sql, params) {
+    // return new Promise((resolve, reject) => {
+    //   database.get(sql, params, (error, row) => {
+    //     if (error) {
+    //       reject(error);
+    //     }
+    //     resolve(row);
+    //   });
+    // });
+
+    return database.executeSql(sql, params);
+  }
+
+  // getAll(database, sql, params) {
+  //   // return new Promise((resolve, reject) => {
+  //   //   database.all(sql, params, (error, rows) => {
+  //   //     if (error) {
+  //   //       reject(error);
+  //   //     }
+
+  //   //     resolve(rows);
+  //   //   });
+  //   // });
+
+  //   return database.executeSql(sql, params);
+  // }
 }

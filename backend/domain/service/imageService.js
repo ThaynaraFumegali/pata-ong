@@ -1,13 +1,13 @@
-class ImageService {
-    imageToBase64(bufferImage) {
-        return bufferImage.toString('base64')
-    }
+import {Buffer} from 'buffer';
 
-    base64ToImage(base64Image) {
-        return Buffer.from(base64Image, 'base64')
-    }
-}
+export default class ImageService {
+  imageToBase64(bufferImage) {
+    // return bufferImage.toString('base64');
+    return 'Alguma imagem';
+  }
 
-module.exports = {
-    ImageService
+  base64ToImage(base64Image) {
+    // return Buffer.from(base64Image, 'base64');
+    return 'Alguma imagem';
+  }
 }

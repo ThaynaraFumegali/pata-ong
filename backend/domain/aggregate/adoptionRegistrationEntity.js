@@ -1,63 +1,59 @@
-const { InvalidArgumentError } = require("../errors/invalidArgumentError")
+import {InvalidArgumentError} from '../errors/invalidArgumentError';
 
-class AdoptionRegistrationEntity {
-    id
-    responsible
-    image
-    animal
-    localization
+export default class AdoptionRegistrationEntity {
+  id;
+  responsible;
+  image;
+  animal;
+  localization;
 
-    constructor(responsible, image, animal, localization) {
-        this.responsible = responsible
-        this.image = image
-        this.animal = animal
-        this.localization = localization
+  constructor(responsible, image, animal, localization) {
+    this.responsible = responsible;
+    this.image = image;
+    this.animal = animal;
+    this.localization = localization;
 
-        this.validateEntity()
+    this.validateEntity();
+  }
+
+  updateImage(image) {
+    this.validateImage(image);
+    this.image = image;
+  }
+
+  updateLocalization(localization) {
+    this.validateLocalization(localization);
+    this.localization = localization;
+  }
+
+  validateEntity() {
+    this.validateResponsible(this.responsible);
+    this.validateImage(this.image);
+    this.validateAnimal(this.animal);
+    this.validateLocalization(this.localization);
+  }
+
+  validateResponsible(responsible) {
+    if (!responsible) {
+      throw new InvalidArgumentError('responsible argument cannot be null');
     }
+  }
 
-    updateImage(image) {
-        validateImage(image)
-        this.image = image
+  validateImage(image) {
+    if (!image) {
+      throw new InvalidArgumentError('image argument cannot be null');
     }
+  }
 
-    updateLocalization(localization) {
-        validateLocalization(localization)
-        this.localization = localization
+  validateAnimal(animal) {
+    if (!animal) {
+      throw new InvalidArgumentError('animal argument cannot be null');
     }
+  }
 
-    validateEntity() {
-        this.validateResponsible(this.responsible)
-        this.validateImage(this.image)
-        this.validateAnimal(this.animal)
-        this.validateLocalization(this.localization)
+  validateLocalization(localization) {
+    if (!localization) {
+      throw new InvalidArgumentError('localization argument cannot be null');
     }
-
-    validateResponsible(responsible) {
-        if (!responsible) {
-            throw new InvalidArgumentError("responsible argument cannot be null")
-        }
-    }
-
-    validateImage(image) {
-        if (!image) {
-            throw new InvalidArgumentError("image argument cannot be null")
-        }
-    }
-
-    validateAnimal(animal) {
-        if (!animal) {
-            throw new InvalidArgumentError("animal argument cannot be null")
-        }
-    }
-
-    validateLocalization(localization) {
-        if (!localization) {
-            throw new InvalidArgumentError("localization argument cannot be null")
-        }
-    }
-}
-
-module.exports = {
-    AdoptionRegistrationEntity
+  }
 }

@@ -1,33 +1,39 @@
-class EncryptionService {
-    crypto
+import CryptoJS from 'crypto-js';
 
-    constructor() {
-        this.crypto = require("crypto")
-    }
+export default class EncryptionService {
+  constructor() {}
 
-    encrypt(password) {
-        const salt = this.generateSalt()
-        const hash = this.crypto.createHmac('sha512', salt)
-        hash.update(password)
-        return {
-            salt,
-            hash: hash.digest()
-        }
-    }
+  encrypt(password) {
+    const algorithm = CryptoJS.algo.SHA512.create();
+    algorithm.update(password, CryptoJS.enc.Utf8);
+    const salt = 'AlgumaChaveAleatoriaASerImplementada';
+    algorithm.update(salt, CryptoJS.enc.Utf8);
+    const hash = algorithm.finalize().toString(CryptoJS.enc.Hex);
+    return {
+      salt,
+      hash,
+    };
+  }
 
-    decrypt(password, saltHash, storedHash) {
-        const hash = this.crypto.createHmac('sha512', saltHash)
-        hash.update(password)
-        const createdHash = hash.digest()
+  //   encrypt(password) {
+  //     const salt = this.generateSalt();
+  //     const hash = createHmac('sha512', salt);
+  //     hash.update(password);
+  //     return {
+  //       salt,
+  //       hash: hash.digest(),
+  //     };
+  //   }
 
-        return createdHash.toString('hex') === storedHash.toString('hex')
-    }
+  //   decrypt(password, saltHash, storedHash) {
+  //     const hash = createHmac('sha512', saltHash);
+  //     hash.update(password);
+  //     const createdHash = hash.digest();
 
-    generateSalt() {
-        return this.crypto.randomBytes(16)
-    }
-}
+  //     return createdHash.toString('hex') === storedHash.toString('hex');
+  //   }
 
-module.exports = {
-    EncryptionService
+  //   generateSalt() {
+  //     return randomBytes(16);
+  //   }
 }

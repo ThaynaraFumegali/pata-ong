@@ -1,8 +1,4 @@
-const EContactType = {
-    cell: "cell",
-    telephone: "telephone"
-}
-
-module.exports = {
-    EContactType
-}
+export const EContactType = {
+  cell: 'cell',
+  telephone: 'telephone',
+};

@@ -1,41 +1,39 @@
-const { InvalidArgumentError } = require("../errors/invalidArgumentError")
+import {InvalidArgumentError} from '../errors/invalidArgumentError';
 
-class ResponsibleEntity {
-    id
-    contact
-    name
+export default class ResponsibleEntity {
+  id;
+  contact;
+  name;
 
-    constructor(id, contact, name) {
-        this.id = id
-        this.contact = contact
-        this.name = name
+  constructor(id, contact, name) {
+    this.id = id;
+    this.contact = contact;
+    this.name = name;
 
-        this.validateEntity()
+    this.validateEntity();
+  }
+
+  validateEntity() {
+    this.validateId(this.id);
+  }
+
+  validateId(id) {
+    if (!id || typeof id !== 'number') {
+      throw new InvalidArgumentError(
+        'id argument cannot be null and must be a number',
+      );
     }
+  }
 
-    validateEntity() {
-        this.validateId(this.id)
+  validateContact(contact) {
+    if (!contact) {
+      throw new InvalidArgumentError('contact argument cannot be null');
     }
+  }
 
-    validateId(id) {
-        if (!id || typeof id !== 'number') {
-            throw new InvalidArgumentError("id argument cannot be null and must be a number")
-        }
+  validateName(name) {
+    if (!name) {
+      throw new InvalidArgumentError('name argument cannot be null');
     }
-
-    validateContact(contact) {
-        if (!contact) {
-            throw new InvalidArgumentError("contact argument cannot be null")
-        }
-    }
-
-    validateName(name) {
-        if (!name) {
-            throw new InvalidArgumentError("name argument cannot be null")
-        }
-    }
-}
-
-module.exports = {
-    ResponsibleEntity
+  }
 }

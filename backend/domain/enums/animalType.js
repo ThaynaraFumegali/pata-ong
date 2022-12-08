@@ -1,4 +1,4 @@
 export const EAnimalType = {
-    dog: "dog",
-    cat: "cat" 
-}
+  dog: 'dog',
+  cat: 'cat',
+};

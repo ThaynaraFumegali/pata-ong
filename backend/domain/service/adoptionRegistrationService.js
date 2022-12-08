@@ -1,57 +1,55 @@
-const { AdoptionRegistrationEntity } = require("../aggregate/adoptionRegistrationEntity")
-const { ResponsibleEntity } = require("../aggregate/responsibleEntity")
-const { AnimaValueObject } = require("../aggregate/valueObject/animalValueObject")
-const { ImageValueObject } = require("../aggregate/valueObject/imageValueObject")
-const { LocalizationValueObject } = require("../aggregate/valueObject/localizationValueObject")
+import AdoptionRegistrationEntity from '../aggregate/adoptionRegistrationEntity';
+import ResponsibleEntity from '../aggregate/responsibleEntity';
+import AnimaValueObject from '../aggregate/valueObject/animalValueObject';
+import ImageValueObject from '../aggregate/valueObject/imageValueObject';
+import LocalizationValueObject from '../aggregate/valueObject/localizationValueObject';
 
-class AdoptionRegistrationService {
-    imageService
-    adoptionRegistrationFactory
+export default class AdoptionRegistrationService {
+  imageService;
+  adoptionRegistrationFactory;
 
-    constructor(
-        imageService,
-        adoptionRegistrationRepositoy
-    ) {
-        this.imageService = imageService
-        this.adoptionRegistrationRepositoy = adoptionRegistrationRepositoy
-    }
+  constructor(imageService, adoptionRegistrationRepositoy) {
+    this.imageService = imageService;
+    this.adoptionRegistrationRepositoy = adoptionRegistrationRepositoy;
+  }
 
-    add(adoptionRegistrationInput) {
-        const responsibleEntity = new ResponsibleEntity(
-            adoptionRegistrationInput.userId,
-            null
-        )
-        const base64Image = this.imageService.imageToBase64(adoptionRegistrationInput.bufferImage)
-        const imageValueObject = new ImageValueObject(
-            base64Image
-        )
-        const animalValueObject = new AnimaValueObject(
-            adoptionRegistrationInput.race,
-            adoptionRegistrationInput.size
-        )
-        const localizationValueObject = new LocalizationValueObject(
-            adoptionRegistrationInput.city,
-            adoptionRegistrationInput.state
-        )
-        const adoptionRegistrationEntity = new AdoptionRegistrationEntity(
-            responsibleEntity,
-            imageValueObject,
-            animalValueObject,
-            localizationValueObject
-        )
-        
-        return this.adoptionRegistrationRepositoy.add(adoptionRegistrationEntity)
-    }
+  add(adoptionRegistrationInput) {
+    const responsibleEntity = new ResponsibleEntity(
+      adoptionRegistrationInput.userId,
+      null,
+    );
+    const base64Image = this.imageService.imageToBase64(
+      adoptionRegistrationInput.bufferImage,
+    );
+    const imageValueObject = new ImageValueObject(base64Image);
+    const animalValueObject = new AnimaValueObject(
+      adoptionRegistrationInput.race,
+      adoptionRegistrationInput.size,
+    );
+    const localizationValueObject = new LocalizationValueObject(
+      adoptionRegistrationInput.city,
+      adoptionRegistrationInput.state,
+    );
+    const adoptionRegistrationEntity = new AdoptionRegistrationEntity(
+      responsibleEntity,
+      imageValueObject,
+      animalValueObject,
+      localizationValueObject,
+    );
 
-    getByIdentifier(id) {
-        return this.adoptionRegistrationRepositoy.getById(id)
-    }
+    console.log('Tudo certo');
 
-    getByLocalization(localizationInput) {
-        return this.adoptionRegistrationRepositoy.getByStateAndCity(localizationInput.state, localizationInput.city)
-    }
-}
+    return this.adoptionRegistrationRepositoy.add(adoptionRegistrationEntity);
+  }
 
-module.exports = {
-    AdoptionRegistrationService
+  getByIdentifier(id) {
+    return this.adoptionRegistrationRepositoy.getById(id);
+  }
+
+  getByLocalization(localizationInput) {
+    return this.adoptionRegistrationRepositoy.getByStateAndCity(
+      localizationInput.state,
+      localizationInput.city,
+    );
+  }
 }
